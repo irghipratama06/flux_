@@ -53,6 +53,7 @@ const PRICES={UCT:0.45,SOL:150,BTC:65000,ETH:3000,USDT:1}; // indicative demo pr
 const ALIAS={uct:'UCT',unicity:'UCT',sol:'SOL',solana:'SOL',btc:'BTC',bitcoin:'BTC',eth:'ETH',ethereum:'ETH',usdt:'USDT',usdc:'USDT'};
 const CHAINS={UCT:'Unicity',SOL:'Solana',BTC:'Bitcoin',ETH:'Ethereum',USDT:'Ethereum'};
 const FEE=0.003;
+const ROUTER=''; // nametag/address of YOUR swap/bridge service that receives the funds and pays out on the target chain
 const KEY='ember_v1';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -135,7 +136,8 @@ async function execute(){
   try{
     if(S.wallet.real&&client){
       // Wallet approves via intent. Adjust action/params to your routing backend.
-      await client.intent('transfer',{coinId:p.from,amount:String(p.amt),memo:p.kind.toLowerCase()+':'+p.from+'->'+p.to});
+      if(!ROUTER){bot('Real execution is not configured yet. Set ROUTER in index.html to the nametag or address of your swap/bridge service. No funds were moved.');return}
+      await client.intent('send',{recipient:ROUTER,amount:String(p.amt),coinId:p.from,memo:p.kind.toLowerCase()+':'+p.from+'->'+p.to});
     }else await new Promise(r=>setTimeout(r,900));
     S.bal[p.from]=(S.bal[p.from]||0)-p.amt;
     S.bal[p.to]=(S.bal[p.to]||0)+p.q.out;
