@@ -137,7 +137,7 @@ async function execute(){
     if(S.wallet.real&&client){
       // Wallet approves via intent. Adjust action/params to your routing backend.
       if(!ROUTER){bot('Real execution is not configured yet. Set ROUTER in index.html to the nametag or address of your swap/bridge service. No funds were moved.');return}
-      await client.intent('send',{recipient:ROUTER,amount:String(p.amt),coinId:p.from,memo:p.kind.toLowerCase()+':'+p.from+'->'+p.to});
+      await client.intent('send',{to:ROUTER,amount:String(p.amt),coinId:p.from,memo:p.kind.toLowerCase()+':'+p.from+'->'+p.to});
     }else await new Promise(r=>setTimeout(r,900));
     S.bal[p.from]=(S.bal[p.from]||0)-p.amt;
     S.bal[p.to]=(S.bal[p.to]||0)+p.q.out;
